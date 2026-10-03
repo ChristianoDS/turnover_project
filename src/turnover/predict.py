@@ -31,9 +31,7 @@ def score(df: pd.DataFrame) -> pd.DataFrame:
     if "JobSatisfaction" in out.columns:
         prob += (pd.to_numeric(out["JobSatisfaction"], errors="coerce") <= 2) * 0.25
     if "EnvironmentSatisfaction" in out.columns:
-        prob += (
-            pd.to_numeric(out["EnvironmentSatisfaction"], errors="coerce") <= 2
-        ) * 0.2
+        prob += (pd.to_numeric(out["EnvironmentSatisfaction"], errors="coerce") <= 2) * 0.2
 
     out[SCORE_COLUMN] = prob.clip(0.0, 1.0).round(4)
     return out
