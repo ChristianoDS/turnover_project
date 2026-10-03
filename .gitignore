@@ -1,3 +1,20 @@
+# Ambiente
 .env
-.venv
-data*
+.venv/
+
+# Dados (ancorado na raiz: NÃO casa com src/turnover/data.py)
+/data/
+*.csv
+*.parquet
+
+# Modelos / artefatos
+/models/
+*.pkl
+*.joblib
+
+# Caches do Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
