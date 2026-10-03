@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [dev, main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Reforça a regra de negócio: PR para main só pode vir da branch dev.
+  # A proteção real é feita por Branch Protection Rules (ver GUIA_CICD.MD);
+  # este job faz o CI falhar cedo e deixa a violação explícita.
+  branch-policy:
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validar origem do PR para main
+        run: |
+          echo "PR de '${{ github.head_ref }}' -> 'main'"
+          if [ "${{ github.head_ref }}" != "dev" ]; then
+            echo "::error::PRs para 'main' só são permitidos a partir da branch 'dev' (origem: '${{ github.head_ref }}')."
+            exit 1
+          fi
+          echo "Origem válida."
+
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Setup Python 3.12
+        run: uv python install 3.12
+
+      - name: Instalar dependências (incluindo dev)
+        run: uv sync --frozen
+
+      - name: Ruff - lint
+        run: uv run ruff check .
+
+      - name: Ruff - formatação
+        run: uv run ruff format --check .
+
+      - name: Testes (pytest)
+        run: uv run pytest
+
+  commit-messages:
+    # Valida que os commits do PR seguem Conventional Commits (commitizen).
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: Instalar dependências
+        run: uv sync --frozen
+
+      - name: Checar mensagens de commit do range do PR
+        run: |
+          uv run cz check --rev-range ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}

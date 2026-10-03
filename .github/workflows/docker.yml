@@ -1,0 +1,55 @@
+name: Docker Build & Push
+
+# Gatilho por branch (diretriz do INSTRUCOES.MD):
+#   push em 'dev'  -> publica a imagem com a tag 'dev'
+#   push em 'main' -> publica a imagem com as tags 'latest' e a versão (vX.Y.Z)
+# Observação: o DEPLOY do app em produção é feito pelo Streamlit Community Cloud
+# (redeploy automático no push para 'main'); esta imagem serve para execução
+# local/portabilidade e não é o canal de deploy do Streamlit Cloud.
+on:
+  push:
+    branches: [dev, main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login no GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Metadados (tags/labels) da imagem
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=dev,enable=${{ github.ref == 'refs/heads/dev' }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=sha,prefix=,format=short
+
+      - name: Build e push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
