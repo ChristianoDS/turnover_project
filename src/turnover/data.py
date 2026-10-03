@@ -29,7 +29,5 @@ def validate(df: pd.DataFrame) -> pd.DataFrame:
 
     ausentes = missing_columns(list(df.columns))
     if ausentes:
-        raise DataContractError(
-            f"Colunas obrigatórias ausentes no CSV: {', '.join(ausentes)}"
-        )
+        raise DataContractError(f"Colunas obrigatórias ausentes no CSV: {', '.join(ausentes)}")
     return df
