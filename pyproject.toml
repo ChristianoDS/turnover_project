@@ -16,6 +16,7 @@ dev = [
     "pytest>=8.0",
     "pre-commit>=3.8",
     "commitizen>=3.29",
+    "nbstripout>=0.7",
 ]
 
 [tool.ruff]

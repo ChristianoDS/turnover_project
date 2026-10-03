@@ -12,8 +12,10 @@ ENV UV_COMPILE_BYTECODE=1 \
 
 WORKDIR /app
 
-# Instala dependências primeiro (camada cacheável) usando o lockfile.
-COPY pyproject.toml uv.lock ./
+# Instala apenas as dependências primeiro (camada cacheável).
+# O README e o pacote são exigidos pelos metadados do projeto (readme + hatch),
+# por isso o README entra já aqui; --no-install-project evita instalar o projeto.
+COPY pyproject.toml uv.lock README.md ./
 RUN uv sync --frozen --no-install-project --no-dev
 
 # Copia o restante do código e instala o projeto.
