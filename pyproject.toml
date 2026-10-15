@@ -5,6 +5,7 @@ description = "Modelo de classificação de turnover (attrition) com app Streaml
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "matplotlib>=3.11.2",
     "pandas==3.0.6",
     "scikit-learn>=1.5",
     "streamlit>=1.38",
@@ -22,6 +23,10 @@ dev = [
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+# Notebooks de exploração (EDA) têm referências entre células e imports
+# incrementais que o Ruff não entende (F821/E501). A higiene dos notebooks
+# é garantida separadamente pelo nbstripout no CI.
+extend-exclude = ["*.ipynb"]
 
 [tool.ruff.lint]
 # E/F = pyflakes+pycodestyle, I = isort, UP = pyupgrade, B = bugbear
