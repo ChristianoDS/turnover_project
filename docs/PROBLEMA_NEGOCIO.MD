@@ -43,7 +43,7 @@ Funcionário Staff/gerentes: 200% do salário anual
 
 Trata-se de um problema de classificação (Funcionário vai sair ou nao vai sair).
 
-Nesse caso, vamos considerar como variável mais impactante a recall, pois a perda financeir é maior quando o modelo erra, ou seja, diz que o funcionário nao vai sair, sendo que ele está em turnover.
+Nesse caso, vamos considerar como variável mais impactante a recall, pois a perda financeira é maior quando o modelo erra, ou seja, diz que o funcionário nao vai sair, sendo que ele está em turnover.
 
 # Base de dados pública
 https://www.kaggle.com/code/faressayah/ibm-hr-analytics-employee-attrition-performance
