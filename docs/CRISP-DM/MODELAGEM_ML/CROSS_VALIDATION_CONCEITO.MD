@@ -276,3 +276,6 @@ print(df_results.to_string(index=False))
 - **Pré-processamento:** sempre dentro de um `Pipeline` — nunca antes do CV
 - **Comparação de modelos:** usar `cross_validate` com `return_train_score=True` para monitorar overfitting
 - **Conjunto de teste final:** avaliado apenas **uma vez**, no modelo final treinado — nunca durante o processo de seleção
+
+- A separação do treino e validação é para fazer o cross validation.
+- Após fazer o cross validarion, podemos usar os dois juntos (treino+val)

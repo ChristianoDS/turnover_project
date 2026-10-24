@@ -346,7 +346,7 @@ print(f"Ganho do threshold otimizado:    R$ {max(net_values)-net_default:,.0f}")
 
 ### Regra prática
 
-- Use **AUC-ROC** para comparar e ranquear modelos de forma geral
-- Use **Curva Precision-Recall** para definir o threshold operacional, especialmente em datasets desbalanceados
+- Use **AUC-ROC** para comparar e ranquear modelos de forma geral. Ela nao lida muito bem com dados desbalanceados, uma vez que um dos seus eixos é a taxa de verdadeiros positivos.
+- Use **Curva Precision-Recall** para definir o threshold operacional, especialmente em datasets desbalanceados.
 - Use **análise de custo-benefício** quando os custos de FP e FN são conhecidos e assimétricos
 - **Nunca use Accuracy** como métrica principal em datasets desbalanceados — um modelo que classifica tudo como negativo atinge 99% de accuracy se a taxa de eventos for 1%
