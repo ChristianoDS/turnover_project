@@ -27,6 +27,11 @@ VAL_SIZE = 0.20
 # Obs.: a partir do scikit-learn 1.8 o par 'penalty'/'solver' foi sendo
 # substituído por 'C'/'l1_ratio'. Mantemos apenas 'C' (regularização L2 é o
 # default) para evitar FutureWarning; ajuste se o tuning exigir L1/elasticnet.
+#
+# Grid Search do Ciclo 03 (StratifiedKFold, scoring=roc_auc):
+#   best_params = {'C': 1.0, 'penalty': 'l2', 'solver': 'lbfgs'}  (AUC CV 0.8976)
+# penalty='l2' e solver='lbfgs' são o default da LogisticRegression, então
+# basta fixar C=1.0 — o modelo resultante é idêntico ao vencedor do tuning.
 BEST_PARAMS: dict = {
     "C": 1.0,
 }
