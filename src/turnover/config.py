@@ -39,6 +39,36 @@ BEST_PARAMS: dict = {
 # Limiar de decisão escolhido na seção de Best Threshold do Ciclo 03.
 BEST_THRESHOLD = 0.5
 
+# Colunas descartadas na Feature Selection (Ciclo 02): união do método filter
+# (variância quasi-zero + baixa discriminação univariada/bivariada) com as
+# variáveis rejeitadas pelo Boruta. Aplicada APÓS a engenharia de features
+# (algumas são features criadas) e ANTES do pré-processamento.
+DROP_COLUMNS: tuple[str, ...] = (
+    # filter + baixa discriminação (drop_vars)
+    "DistanceFromHome",
+    "Over18",
+    "IncomeRelativeToLevel",
+    "CommuteImpact",
+    "HourlyRate",
+    "NumCompaniesWorked",
+    "EmployeeNumber",
+    "EducationField",
+    "MonthlyRate",
+    "PercentSalaryHike",
+    "BusinessTravel",
+    "Gender",
+    # rejeitadas pelo Boruta (as ainda não listadas acima)
+    "AgeGroup",
+    "Department",
+    "Education",
+    "JobRole",
+    "PromotionLag",
+    "YearsSinceLastPromotion",
+    # colunas constantes (sem variância) identificadas no Ciclo 01/02
+    "EmployeeCount",
+    "StandardHours",
+)
+
 # --- Caminhos resolvidos a partir da raiz do projeto (nunca de input externo) ---
 
 

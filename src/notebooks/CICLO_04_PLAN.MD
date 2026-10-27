@@ -31,10 +31,11 @@ com os melhores hiperparâmetros encontrados no fine-tuning.
 ```
 src/turnover/
 ├── __init__.py
-├── config.py                # constantes: TARGET, caminhos, seed, best_params
+├── config.py                # constantes: TARGET, caminhos, seed, best_params, DROP_COLUMNS
 ├── schema.py                # (existe) contrato de colunas
 ├── data.py                  # (existe) load_csv + validate
 ├── feature_engineering.py   # classe FeatureEngineer (fit/transform)
+├── feature_selection.py     # classe FeatureSelector (drop das colunas dos Ciclos 02/03)
 ├── preprocessing.py         # classe Preprocessor (RobustScaler + OneHotEncoder)
 ├── model.py                 # classe ModelWrapper (LogisticRegression)
 ├── pipeline.py              # classe TurnoverPipeline (orquestra tudo)
@@ -52,10 +53,15 @@ tests/                       # testes unitários das classes
 > papéis. Após o `train.py` gerar o artefato, o `predict.py`/`main.py` passam a
 > carregá-lo.
 
-## 3. As 4 classes
+## 3. As classes do pipeline
 
 Todas seguem o padrão `fit`/`transform` do sklearn — aprendem **só no treino** e
-reaplicam sem recalcular, o que elimina leakage por construção.
+reaplicam sem recalcular, o que elimina leakage por construção. A ordem de
+execução no pipeline é:
+
+```
+FeatureEngineer → FeatureSelector → Preprocessor → ModelWrapper
+```
 
 ### 3.1 `FeatureEngineer` (feature_engineering.py)
 
@@ -64,6 +70,17 @@ reaplicam sem recalcular, o que elimina leakage por construção.
 - `transform(df)`: cria as features do Ciclo 02 — razões/taxas linha a linha
   (seguras) + as de grupo (usando o que foi aprendido no `fit`).
 - `fit_transform(df)`.
+
+### 3.1b `FeatureSelector` (feature_selection.py)
+
+- Aplica a **feature selection decidida nos Ciclos 02/03** (método filter de
+  variância/baixa discriminação + Boruta). Não re-executa esses algoritmos a
+  cada treino — guarda a **lista final** de colunas a descartar
+  (`config.DROP_COLUMNS`) e a remove de forma consistente em treino/val/teste.
+- Roda **após** o `FeatureEngineer` (algumas colunas descartadas são features
+  criadas, ex.: `AgeGroup`, `CommuteImpact`) e **antes** do `Preprocessor`.
+- `fit(X)`: registra quais colunas da lista existem de fato em X.
+- `transform(X)`: remove as colunas (`errors='ignore'` para robustez).
 
 ### 3.2 `Preprocessor` (preprocessing.py)
 
@@ -81,7 +98,8 @@ reaplicam sem recalcular, o que elimina leakage por construção.
 
 ### 3.4 `TurnoverPipeline` (pipeline.py) — classe central
 
-- Orquestra `FeatureEngineer → Preprocessor → ModelWrapper` como uma unidade.
+- Orquestra `FeatureEngineer → FeatureSelector → Preprocessor → ModelWrapper`
+  como uma unidade.
 - `fit(df_train)`: encadeia o fit das três etapas.
 - `predict_proba(df)` / `predict(df, threshold)`: encadeia o transform + modelo.
 - `save(path)` / `load(path)`: serializa o pipeline **inteiro** (as três etapas

@@ -16,6 +16,7 @@ import pandas as pd
 
 from turnover.config import BEST_THRESHOLD, TARGET
 from turnover.feature_engineering import FeatureEngineer
+from turnover.feature_selection import FeatureSelector
 from turnover.model import ModelWrapper
 from turnover.preprocessing import Preprocessor
 
@@ -25,6 +26,7 @@ class TurnoverPipeline:
 
     def __init__(self, model_params: dict | None = None) -> None:
         self.fe = FeatureEngineer()
+        self.selector = FeatureSelector()
         self.prep = Preprocessor()
         self.model = ModelWrapper(params=model_params)
         self._fitted = False
@@ -53,6 +55,7 @@ class TurnoverPipeline:
         if y is None:
             raise ValueError(f"Coluna alvo '{TARGET}' ausente no DataFrame de treino.")
         X = self.fe.fit_transform(X)
+        X = self.selector.fit_transform(X)  # feature selection (Ciclos 02/03)
         X = self.prep.fit_transform(X)
         self.model.fit(X, y)
         self._fitted = True
@@ -61,6 +64,7 @@ class TurnoverPipeline:
     def _prepare(self, df: pd.DataFrame) -> pd.DataFrame:
         X, _ = self._split_X_y(df)  # ignora o alvo se vier junto
         X = self.fe.transform(X)
+        X = self.selector.transform(X)  # mesma seleção aplicada no fit
         X = self.prep.transform(X)
         return X
 
