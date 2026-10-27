@@ -6,6 +6,8 @@
 /data/
 *.csv
 *.parquet
+docs
+/docs/
 
 # Modelos / artefatos
 /models/
