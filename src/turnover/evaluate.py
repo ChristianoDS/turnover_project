@@ -32,6 +32,26 @@ def ml_metrics(
     )
 
 
+def sweep_thresholds(
+    y_true: pd.Series | np.ndarray,
+    y_prob: pd.Series | np.ndarray,
+    thresholds: tuple[float, ...] | list[float] | None = None,
+) -> pd.DataFrame:
+    """Compara métricas para vários limiares, uma linha por threshold.
+
+    Útil para enxergar o trade-off recall x precision e escolher o corte que
+    atende ao objetivo de negócio. Se `thresholds` for None, usa
+    config.THRESHOLDS_TO_TEST.
+    """
+    from turnover.config import THRESHOLDS_TO_TEST
+
+    thresholds = thresholds if thresholds is not None else THRESHOLDS_TO_TEST
+    linhas = [
+        ml_metrics(f"threshold={t:.2f}", y_true, y_prob, threshold=t) for t in thresholds
+    ]
+    return pd.concat(linhas, ignore_index=True)
+
+
 def best_threshold_by_f1(
     y_true: pd.Series | np.ndarray,
     y_prob: pd.Series | np.ndarray,

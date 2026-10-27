@@ -29,6 +29,10 @@ class TurnoverPipeline:
         self.selector = FeatureSelector()
         self.prep = Preprocessor()
         self.model = ModelWrapper(params=model_params)
+        # métricas de avaliação (ex.: no teste) preenchidas pelo train.py e
+        # serializadas junto, para o app exibir sem recalcular.
+        self.metrics: dict[str, float] = {}
+        self.threshold: float = BEST_THRESHOLD
         self._fitted = False
 
     @staticmethod

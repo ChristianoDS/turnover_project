@@ -37,7 +37,12 @@ BEST_PARAMS: dict = {
 }
 
 # Limiar de decisão escolhido na seção de Best Threshold do Ciclo 03.
+# Altere este valor para mudar o corte padrão usado em train.py / predict.py.
 BEST_THRESHOLD = 0.5
+
+# Lista de limiares para explorar o trade-off recall x precision
+# (ver evaluate.sweep_thresholds). Ajuste à vontade para testar outros cortes.
+THRESHOLDS_TO_TEST: tuple[float, ...] = (0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60)
 
 # Colunas descartadas na Feature Selection (Ciclo 02): união do método filter
 # (variância quasi-zero + baixa discriminação univariada/bivariada) com as

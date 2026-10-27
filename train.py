@@ -70,6 +70,17 @@ def main() -> int:
     print("\n=== Desempenho no conjunto de TESTE ===")
     print(report.to_string(index=False))
 
+    # Guarda as métricas do teste no próprio pipeline, para o app exibi-las
+    # sem recalcular (serializadas junto do artefato).
+    pipeline.metrics = {
+        "accuracy": float(report["Accuracy"].iloc[0]),
+        "f1": float(report["F1-Score"].iloc[0]),
+        "precision": float(report["Precision"].iloc[0]),
+        "recall": float(report["Recall"].iloc[0]),
+        "auc": float(report["AUC"].iloc[0]),
+    }
+    pipeline.threshold = BEST_THRESHOLD
+
     # 6. Persiste o pipeline treinado para produção (Streamlit / predict.py).
     pipeline.save(PIPELINE_PATH)
     print(f"\nPipeline salvo em: {PIPELINE_PATH}")
