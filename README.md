@@ -34,7 +34,22 @@ Análise sobre a base histórica (1.761 colaboradores), com custo de substituiç
 | **Custo total estimado do turnover** | **R$ 37.495.244** |
 | **Custo médio por saída** | **R$ 71.014** |
 
-**Potencial de economia:** cada funcionário em risco **identificado e retido** evita ~R$ 71 mil em custo de substituição. Mesmo recuperando uma fração dos que sairiam, o retorno supera com folga o custo de operar o modelo — o app traz uma aba de **Simulação de ROI** que calcula economia bruta, líquida e ROI anual em função do recall do modelo e da taxa de retenção do RH.
+**Potencial de economia:** cada funcionário em risco **identificado e retido** evita o custo de substituição. Mesmo recuperando uma fração dos que sairiam, o retorno supera com folga o custo de operar o modelo.
+
+### ROI estimado do projeto
+
+Projeção com o **Recall do modelo final (0,745)** e pressupostos conservadores de operação: taxa de retenção do RH de 30%, custo por intervenção de R$ 5.000, custo anual do modelo de R$ 13.000 e infraestrutura de R$ 200.000. O custo médio de substituição aqui usa o multiplicador por senioridade aplicado **apenas sobre quem efetivamente saiu** (R$ 46.195), uma base mais conservadora que o custo médio geral de R$ 71.014 da tabela anterior.
+
+| Indicador | Valor |
+| --- | --- |
+| Saídas/ano identificadas pelo modelo (recall 0,745) | 393 de 528 |
+| Funcionários efetivamente retidos (30%) | 117 |
+| **Economia bruta** | **R$ 5.404.850** |
+| Custo anual de operação | R$ 798.000 |
+| **Economia líquida** | **R$ 4.606.850** |
+| **ROI anual** | **6,77×** |
+
+Ou seja, cada R$ 1 investido na operação do modelo retorna ~R$ 6,77 em economia. Os pressupostos são ajustáveis na aba de **Simulação de ROI** do app, que recalcula economia bruta, líquida e ROI em tempo real.
 
 ---
 
