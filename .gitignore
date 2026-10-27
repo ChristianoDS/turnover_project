@@ -8,6 +8,8 @@
 *.parquet
 docs
 /docs/
+CICD
+/CICD/
 
 # Modelos / artefatos
 /models/
